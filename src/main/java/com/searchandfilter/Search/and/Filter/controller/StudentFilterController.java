@@ -1,10 +1,13 @@
 package com.searchandfilter.Search.and.Filter.controller;
 
 import com.searchandfilter.Search.and.Filter.domain.Student;
+import com.searchandfilter.Search.and.Filter.dto.PageRequestDto;
 import com.searchandfilter.Search.and.Filter.dto.RequestDto;
 import com.searchandfilter.Search.and.Filter.repository.StudentRepository;
 import com.searchandfilter.Search.and.Filter.service.FiltersSpecificatoin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +55,13 @@ public class StudentFilterController {
         Specification<Student> studentSearchSpecification = studentFiltersSpecificatoin.getSearchSpecification(requestDto.getSearchRequestDtos(), requestDto.getGlobalOperator());
         return studentRepository.findAll(studentSearchSpecification);
     }
+
+    @PostMapping("/filteredstudents/paged")
+    public Page<Student> getFilteredStudentsPaged(@RequestBody RequestDto requestDto){
+        Specification<Student> studentSearchSpecification = studentFiltersSpecificatoin.getSearchSpecification(requestDto.getSearchRequestDtos(), requestDto.getGlobalOperator());
+        Pageable pageable = new PageRequestDto().getPageable(requestDto.getPageDto());
+        return studentRepository.findAll(studentSearchSpecification, pageable);
+    }
 }
 
 // This object is used by postman to get data from searching student api.
@@ -96,3 +106,22 @@ public class StudentFilterController {
 //                          }
 //                  ]
 //        }
+
+// This Object is used to get data with pagination
+//  {
+//        "globalOperator": "OR",
+//        "pageDto": {
+//              "pageNo": 0,
+//              "pageSize": 2,
+//              "sort": "ASC",
+//              "sortByColumn": "id"
+//              },
+//        "searchRequestDtos": [
+//              {
+//                  "column": "city",
+//                  "joinTable": "address",
+//                  "value": "Nagpur",
+//                  "operation": "JOIN"
+//              }
+//           ]
+//   }
