@@ -53,3 +53,46 @@ public class StudentFilterController {
         return studentRepository.findAll(studentSearchSpecification);
     }
 }
+
+// This object is used by postman to get data from searching student api.
+//      {
+//          "globalOperator": "OR",
+//          "searchRequestDtos": [
+//                      {
+//                          "column": "id",
+//                          "value": "1",
+//                          "operation": "EQUAL"
+//                          },
+//                      {
+//                          "column": "name",
+//                          "value": "S",
+//                          "operation": "LIKE"
+//                          },
+//                      {
+//                          "column": "name",
+//                          "value": "Gaurav,Rex",
+//                          "operation": "IN"
+//                          },
+//                      {
+//                          "column": "id",
+//                          "value": "7",
+//                          "operation": "GREATER_THAN"
+//                          },
+//                      {
+//                          "column": "id",
+//                          "value": "5",
+//                          "operation": "LESS_THAN"
+//                          },
+//                      {
+//                          "column": "id",
+//                          "value": "7,8",
+//                          "operation": "BETWEEN"
+//                          },
+//                      {
+//                          "column": "city",
+//                          "joinTable": "address",
+//                          "value": "Nagpur",
+//                          "operation": "JOIN"
+//                          }
+//                  ]
+//        }

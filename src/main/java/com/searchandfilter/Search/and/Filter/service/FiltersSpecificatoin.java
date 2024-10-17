@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -34,9 +35,34 @@ public class FiltersSpecificatoin<T> {
                         predicates.add(equal);
                         break;
                     case LIKE:
-                        Predicate like = criteriaBuilder.like(root.get(requestDto.getColumn()), "%" + requestDto.getValue() + "%");
+                        Predicate like = criteriaBuilder.like(root.get(requestDto.getColumn()), "%"+requestDto.getValue()+"%");
                         predicates.add(like);
                         break;
+                    case IN:
+                        String[] split = requestDto.getValue().split(",");
+                        Predicate in = root.get(requestDto.getColumn()).in(Arrays.asList(split));
+                        predicates.add(in);
+                        break;
+                    case GREATER_THAN:
+                        Predicate greater_than = criteriaBuilder.greaterThan(root.get(requestDto.getColumn()), requestDto.getValue());
+                        predicates.add(greater_than);
+                        break;
+                    case LESS_THAN:
+                        Predicate less_than = criteriaBuilder.lessThan(root.get(requestDto.getColumn()), requestDto.getValue());
+                        predicates.add(less_than);
+                        break;
+                    case BETWEEN:
+                        String[] split1 = requestDto.getValue().split(",");
+                        Predicate between = criteriaBuilder.between(root.get(requestDto.getColumn()), Long.parseLong(split1[0].trim()), Long.parseLong(split1[1].trim()));
+                        predicates.add(between);
+                        break;
+                    case JOIN:
+                        Predicate join = criteriaBuilder.equal(root.join(requestDto.getJoinTable()).get(requestDto.getColumn()), requestDto.getValue());
+                        predicates.add(join);
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + "");
                 }
             }
             if (globalOperator.equals(RequestDto.GlobalOperator.AND)){
